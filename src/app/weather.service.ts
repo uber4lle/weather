@@ -1,5 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { WeatherDataInterface } from './main/weather-data.interface';
+import { ForecastDataInterface } from './forecast/forecast-data.interface';
+import { Observable } from 'rxjs';
 
 @Injectable({providedIn: 'root'})
 export class WeatherService {
@@ -8,12 +11,12 @@ export class WeatherService {
   
   constructor(private readonly http: HttpClient) { }
   
-  getWeather(zipcode: string) {
+  getWeatherData(zipcode: string) {
     const url = `${this.API_BASE_URL}weather?zip=${zipcode}&appid=${this.APP_ID}&units=imperial`;
-    return this.http.get(url);
+    return this.http.get<WeatherDataInterface>(url);
   }
 
-  getForecast(zipcode: string) {
-    this.http.get(`${this.API_BASE_URL}forecast?zip=${zipcode}&appid=${this.APP_ID}&units=imperial`)
+  getForecastData(zipcode: string): Observable<ForecastDataInterface> {
+    return this.http.get<ForecastDataInterface>(`${this.API_BASE_URL}forecast/daily?zip=${zipcode}&appid=${this.APP_ID}&cnt=5&units=imperial`)
   }
 }
